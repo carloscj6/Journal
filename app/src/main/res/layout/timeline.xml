@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:elevation="10dp"
+    android:layout_marginBottom="10dp">
+    <TextView
+        android:layout_marginTop="3dp"
+        android:paddingTop="1dp"
+        android:paddingBottom="1dp"
+        android:paddingStart="1dp"
+        android:paddingEnd="2dp"
+        android:background="@drawable/timebg"
+        android:id="@+id/textTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:text="11:34"
+        android:textSize="15sp"/>
+
+    <com.github.vipulasri.timelineview.TimelineView
+        android:id="@+id/time_marker"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="10dp"
+        app:line="@color/colorPrimary"
+        app:linePadding="5dp"
+        app:lineSize="1dp"
+        app:markerSize="7dp" />
+
+    <TextView
+        android:id="@+id/textActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:paddingBottom="5dp"
+        android:paddingEnd="5dp"
+        android:paddingStart="5dp"
+        android:text="TextView"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+
+
+
+
+</LinearLayout>

@@ -17,6 +17,7 @@ import com.revosleap.journal.Model.FetchModel;
 import com.revosleap.journal.NewEntry;
 import com.revosleap.journal.R;
 import com.revosleap.journal.RecyclerUtils.ViewHolders.TimelineVholder;
+import com.revosleap.journal.Timeline;
 
 import java.util.List;
 
@@ -72,8 +73,9 @@ public class TlAdapter extends RecyclerView.Adapter<TimelineVholder> {
                     editor.putString("activitykey",key);
                     editor.putString("action","edit");
                     editor.apply();
-                    Intent intent= new Intent(context, NewEntry.class);
+                    Intent intent= new Intent(context, Timeline.class);
                     context.startActivity(intent);
+
                 }
             });
 

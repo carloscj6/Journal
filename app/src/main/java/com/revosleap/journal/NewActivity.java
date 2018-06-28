@@ -15,7 +15,7 @@ import android.view.ViewGroup;
  * A simple {@link Fragment} subclass.
  */
 public class NewActivity extends Fragment {
-    FloatingActionButton fab;
+    private FloatingActionButton fab;
 
 
     public NewActivity() {

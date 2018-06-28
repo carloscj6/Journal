@@ -1,51 +1,38 @@
 package com.revosleap.journal;
 
-import android.content.Intent;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 
 import android.support.design.widget.TextInputEditText;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
+import android.view.inputmethod.InputMethodManager;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 import com.revosleap.journal.Constants.AppConstants;
-import com.revosleap.journal.FirebaseUtils.DiaryEntry;
+import com.revosleap.journal.Constants.AppStrings;
 import com.revosleap.journal.Model.EntryModels;
 import com.revosleap.journal.Model.FetchModel;
-import com.revosleap.journal.RecyclerUtils.Adapters.TlAdapter;
+import com.revosleap.journal.RecyclerUtils.RecyclerView.RecyclerViewBasic;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 public class Timeline extends AppCompatActivity {
-    RecyclerView recyclerView;
-    List<FetchModel>modelsList;
-    DatabaseReference dbref= new AppConstants.FirebaseConstants().userDb;
-    Toolbar toolbar;
-    TextInputEditText entryText;
-    String text,activitykey,action;
+    private RecyclerView recyclerView;
+    private Toolbar toolbar;
+    private TextInputEditText entryText;
+    private String text;
+    private String activitykey;
+    private String action;
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,16 +41,19 @@ public class Timeline extends AppCompatActivity {
         recyclerView= findViewById(R.id.recycler);
         toolbar = findViewById(R.id.toolbar);
         entryText= findViewById(R.id.diary_input);
+        fab = findViewById(R.id.fab);
 
 
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setHomeButtonEnabled(true);
 
-            loadTl();
-            swipe();
+
+
+        new RecyclerViewBasic(recyclerView,Timeline.this).loadrecycler(); //loading recyclerview
+        new RecyclerViewBasic(recyclerView,Timeline.this).recyclerGesture();//recyclerviewGestures
             loadday();
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -71,75 +61,40 @@ public class Timeline extends AppCompatActivity {
             }
         });
 
-        SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(Timeline.this);
-        text= preferences.getString("activity","");
-        activitykey= preferences.getString("activitykey","");
-        action= preferences.getString("action","");
+        text= new AppStrings(Timeline.this).activity();
+        activitykey= new AppStrings(Timeline.this).activitykey();
+        action= new AppStrings(Timeline.this).action();
         if (action.equals("edit")){
             entryText.setText(text);
 
         }
         else Log.v("logger", "nuhtin");
     }
-    private void loadTl(){
-        SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(Timeline.this);
-        toolbar.setTitle(preferences.getString("dateCal",""));
-        dbref.child(preferences.getString("dateCal","")).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                modelsList= new ArrayList<>();
-                for (DataSnapshot dataSnapshot1:dataSnapshot.getChildren()){
-                    EntryModels model= dataSnapshot1.getValue(EntryModels.class);
-                    FetchModel fetchModel= new FetchModel();
-                    fetchModel.setDate(model.getDate());
-                    fetchModel.setTime(model.getTime());
-                    fetchModel.setJournalEntry(model.getJournalEntry());
-                    fetchModel.setKey(model.getKey());
-                    modelsList.add(fetchModel);
 
-                    Collections.reverse(modelsList);
-                    TlAdapter adapter= new TlAdapter(modelsList,Timeline.this);
-                    RecyclerView.LayoutManager manager= new LinearLayoutManager(Timeline.this);
-                    recyclerView.setLayoutManager(manager);
-                    recyclerView.setAdapter(adapter);
-
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(Timeline.this, "Db Error", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
     private void loadday(){
-        SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(Timeline.this);
-        SimpleDateFormat simpleDateFormat= new SimpleDateFormat("EEE, MMM d");
-        Calendar calendar= Calendar.getInstance();
-        String date= simpleDateFormat.format(calendar.getTime());
-        if (preferences.getString("dateCal","")!= date){
+        String date= new AppStrings(Timeline.this).date();
+
+        if (!new AppStrings(Timeline.this).today().equals(date)){
             entryText.setVisibility(View.GONE);
+            fab.setVisibility(View.GONE);
         }
         else entryText.setVisibility(View.VISIBLE);
 
+
+
     }
-    private void swipe(){
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.RIGHT|ItemTouchHelper.LEFT) {
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-//                int id =(int) viewHolder.itemView.getTag();
-//                dbref.removeValue();
 
 
-            }
-        }).attachToRecyclerView(recyclerView);
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(Timeline.this);
+        SharedPreferences.Editor editor= preferences.edit();
+        editor.putString("activity","");
+        editor.putString("activitykey","");
+        editor.putString("action","");
+        editor.apply();
     }
 
     @Override
@@ -149,15 +104,16 @@ public class Timeline extends AppCompatActivity {
     }
 
     private void setEntryText(){
+        String today= new AppStrings(Timeline.this).today();
         SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(Timeline.this);
         DatabaseReference dbref= AppConstants.FirebaseConstants.userDb;
-        DatabaseReference databaseReference=dbref.child(preferences.getString("dateCal",""));
+        DatabaseReference databaseReference=dbref.child(today);
         SharedPreferences.Editor editor= preferences.edit();
         if (action.equals("edit")){
 
 
 
-            dbref.child(preferences.getString("dateCal","")).child(activitykey).child("journalEntry")
+            dbref.child(today).child(activitykey).child("journalEntry")
                     .setValue(entryText.getText().toString());
             entryText.setText("");
             editor.putString("activity","");
@@ -168,22 +124,15 @@ public class Timeline extends AppCompatActivity {
         }
         else {
             String uInput= entryText.getText().toString();
-            Calendar calendar= Calendar.getInstance();
-            String date= Calendar.getInstance().getTime().toString();
-
-            SimpleDateFormat simpleDateFormat= new SimpleDateFormat("HH:mm");
-
-            String time= simpleDateFormat.format(calendar.getTime());
+            String time= new AppStrings(Timeline.this).time();
             String key= dbref.push().getKey();
-
-
 
             if (uInput.isEmpty()){
                 entryText.setError("No entry");
             }
             else {
                 EntryModels models= new EntryModels();
-                models.setDate(date);
+                models.setDate(Calendar.getInstance().getTime().toString());
                 models.setTime(time);
                 models.setKey(key);
                 models.setJournalEntry(uInput);
@@ -197,7 +146,15 @@ public class Timeline extends AppCompatActivity {
                 editor.apply();
             }
         }
+        try {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        } catch (Exception e) {
+           Log.e("keyboard","exception while minimizing sof keyboard");
+        }
     }
+
+
 
 
 }

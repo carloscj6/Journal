@@ -9,12 +9,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.github.vipulasri.timelineview.TimelineView;
-import com.revosleap.journal.FirebaseUtils.EditEntry;
 import com.revosleap.journal.Model.FetchModel;
-import com.revosleap.journal.NewEntry;
 import com.revosleap.journal.R;
 import com.revosleap.journal.RecyclerUtils.ViewHolders.TimelineVholder;
 import com.revosleap.journal.Timeline;
@@ -22,8 +19,8 @@ import com.revosleap.journal.Timeline;
 import java.util.List;
 
 public class TlAdapter extends RecyclerView.Adapter<TimelineVholder> {
-    List<FetchModel> models;
-    Context context;
+    private List<FetchModel> models;
+    private Context context;
 
 
     public TlAdapter(List<FetchModel> models,Context context) {
@@ -63,6 +60,7 @@ public class TlAdapter extends RecyclerView.Adapter<TimelineVholder> {
 
             holder.activity.setText(activity);
             holder.time.setText(time);
+
 
             holder.activity.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -104,5 +102,8 @@ public class TlAdapter extends RecyclerView.Adapter<TimelineVholder> {
         }
         catch (Exception e){}
         return arr;
+    }
+    public List<FetchModel> getkey(){
+        return models;
     }
 }

@@ -4,9 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,24 +15,24 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
-import com.applikeysolutions.cosmocalendar.model.Day;
-import com.applikeysolutions.cosmocalendar.selection.BaseSelectionManager;
-import com.applikeysolutions.cosmocalendar.view.CalendarView;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.revosleap.journal.Constants.AppStrings;
+import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-        CompactCalendarView calendarView;
-        FirebaseAuth auth= FirebaseAuth.getInstance();
-        TextView title;
+        private CompactCalendarView calendarView;
+        private FirebaseAuth auth= FirebaseAuth.getInstance();
+        private TextView title;
 
 
     @Override
@@ -68,8 +66,8 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        navheader();
+
     }
 
     @Override
@@ -144,7 +142,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
     }
-    public void todays(){
+    private void todays(){
         SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         SharedPreferences.Editor editor= preferences.edit();
         SimpleDateFormat simpleDateFormat= new SimpleDateFormat("EEE, MMM d");
@@ -154,6 +152,17 @@ public class MainActivity extends AppCompatActivity
         editor.apply();
         title.setText(date);
 
+
+    }
+    private void navheader(){
+        NavigationView navigationView= findViewById(R.id.nav_view);
+        View view= navigationView.getHeaderView(0);
+        CircleImageView imageView= view.findViewById(R.id.profilePic);
+        TextView name= view.findViewById(R.id.nameTxt);
+        Picasso.get().load(new AppStrings(MainActivity.this).profileP()).into(imageView);
+        name.setText(new AppStrings(MainActivity.this).nameUser());
+        //  Log.v("Purl",new AppStrings(Timeline))
+        navigationView.setNavigationItemSelectedListener(this);
 
     }
 }

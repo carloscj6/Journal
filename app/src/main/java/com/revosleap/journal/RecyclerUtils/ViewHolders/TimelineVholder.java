@@ -12,12 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TimelineVholder extends RecyclerView.ViewHolder  {
-    List<FetchModel> models= new ArrayList<>();
 
 
     public TextView activity;
    public TextView time;
-   public TimelineView timelineView;
+   private TimelineView timelineView;
     public TimelineVholder(View itemView, int viewType) {
         super(itemView);
         activity= itemView.findViewById(R.id.textActivity);

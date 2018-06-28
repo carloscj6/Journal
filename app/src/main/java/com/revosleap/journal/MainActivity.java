@@ -115,6 +115,9 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_calendar) {
             // Handle the camera action
         }
+        else if (id==R.id.nav_share){
+            share();
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -164,5 +167,14 @@ public class MainActivity extends AppCompatActivity
         //  Log.v("Purl",new AppStrings(Timeline))
         navigationView.setNavigationItemSelectedListener(this);
 
+    }
+    private void share(){
+        Intent intent= new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_SUBJECT,"Simple to use Journal");
+        intent.putExtra(Intent.EXTRA_TEXT,new AppStrings(MainActivity.this).appUrl());
+        intent.putExtra(Intent.EXTRA_TITLE,"Share App");
+        startActivity(intent);
     }
 }

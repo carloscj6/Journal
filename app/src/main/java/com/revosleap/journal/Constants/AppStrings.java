@@ -49,5 +49,8 @@ public class AppStrings {
     public String nameUser(){
         return Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getDisplayName();
     }
+    public String appUrl(){
+        return "https://github.com/carloscj6/Journal";
+    }
 
 }

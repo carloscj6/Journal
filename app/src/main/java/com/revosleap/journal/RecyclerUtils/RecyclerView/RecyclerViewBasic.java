@@ -24,17 +24,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class RecyclerViewBasic {
+public class RecyclerViewBasic  {
     private RecyclerView recyclerView;
     private Context context;
     private DatabaseReference dbref= AppConstants.FirebaseConstants.userDb;
     private List<FetchModel> modelList;
 
 
-    public RecyclerViewBasic(RecyclerView recyclerView, Context context) {
+    public RecyclerViewBasic(RecyclerView recyclerView, Context context, List<FetchModel> modelList) {
         this.recyclerView = recyclerView;
         this.context = context;
+        this.modelList= modelList;
     }
+    public RecyclerViewBasic(Context context, List<FetchModel> models) {
+        this.context = context;
+        this.modelList = models;
+    }
+
+
     public void loadrecycler(){
 
         SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(context);
@@ -73,29 +80,27 @@ public class RecyclerViewBasic {
                 ItemTouchHelper.RIGHT|ItemTouchHelper.LEFT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder
-                    viewHolder, RecyclerView.ViewHolder target) {
+                    viewHoldr, RecyclerView.ViewHolder target) {
                 return false;
             }
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-//                int id =(int) viewHolder.itemView.getTag();
-//                dbref.removeValue();
-                //TODO fix swipe to delete
-//                TlAdapter adapter= new TlAdapter(modelList,context);
-//                SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(context);
-//                String date= preferences.getString("dateCal","");
-//                List<FetchModel> fetchModels= adapter.getkey();
-//                int position= viewHolder.getAdapterPosition();
+                int position= viewHolder.getAdapterPosition();
+
+                TlAdapter adapter= new TlAdapter(context,modelList);
+                //modelList= new ArrayList<>();
+
+
+//                modelList= adapter.getkey();
 //
-//             String key= adapter.getkey().get(position).getKey();
-//                Log.v("deletion",key);
-//                dbref.child(date).child(key).removeValue();
-
-
+//                adapter.notifyItemRemoved(position);
+//                modelList.remove(position);
 
             }
         }).attachToRecyclerView(recyclerView);
 
     }
+
+
 }

@@ -27,21 +27,16 @@ public class TlAdapter extends RecyclerView.Adapter<TimelineVholder> {
         this.models = models;
         this.context= context;
     }
-
-
-
-
+    public TlAdapter(Context context,  List<FetchModel> models) {
+        this.context = context;
+        this.models = models;
+    }
 
     @NonNull
     @Override
     public TimelineVholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view= LayoutInflater.from(context).inflate(R.layout.timeline,parent,false);
-        TimelineVholder vholder= new TimelineVholder(view,viewType);
-
-
-
-
 
        return new TimelineVholder(view,viewType);
     }
@@ -52,15 +47,12 @@ public class TlAdapter extends RecyclerView.Adapter<TimelineVholder> {
         final SharedPreferences.Editor editor=preferences.edit();
 
             FetchModel list= models.get(position);
-            String date= list.getDate();
-            String activity= list.getJournalEntry();
-            String key=list.getKey();
 
+            String activity= list.getJournalEntry();
             String time= list.getTime();
 
             holder.activity.setText(activity);
             holder.time.setText(time);
-
 
             holder.activity.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -77,12 +69,7 @@ public class TlAdapter extends RecyclerView.Adapter<TimelineVholder> {
                 }
             });
 
-
-
     }
-
-
-
 
     @Override
     public int getItemViewType(int position) {
@@ -103,7 +90,9 @@ public class TlAdapter extends RecyclerView.Adapter<TimelineVholder> {
         catch (Exception e){}
         return arr;
     }
+
     public List<FetchModel> getkey(){
         return models;
     }
+
 }

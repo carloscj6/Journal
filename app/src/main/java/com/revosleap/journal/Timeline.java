@@ -33,6 +33,7 @@ public class Timeline extends AppCompatActivity {
     private String activitykey;
     private String action;
     FloatingActionButton fab;
+    private List<FetchModel> models;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +50,8 @@ public class Timeline extends AppCompatActivity {
 
 
 
-        new RecyclerViewBasic(recyclerView,Timeline.this).loadrecycler(); //loading recyclerview
-        new RecyclerViewBasic(recyclerView,Timeline.this).recyclerGesture();//recyclerviewGestures
+        new RecyclerViewBasic(recyclerView,Timeline.this,models).loadrecycler(); //loading recyclerview
+        new RecyclerViewBasic(recyclerView,Timeline.this,models).recyclerGesture();//recyclerviewGestures
             loadday();
 
 

@@ -8,6 +8,6 @@ public class Persistence extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true); //allow offline accessibility of Firebase database
     }
 }
